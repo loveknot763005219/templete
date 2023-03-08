@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, SpriteComponent, Color, RichTextComponent, find, isValid, Vec3, UITransformComponent } from "cc";
 import { ResourceUtil } from "./resourceUtil";
 import { PoolManager } from "./poolManager";
+import {Constant} from "./constant";
 const { ccclass, property } = _decorator;
 
 const SHOW_STR_INTERVAL_TIME = 800;
@@ -11,6 +12,7 @@ export class UIManager {
     private _dictSharedPanel: any = {}
     //对应界面是否打开
     private _dictLoading: any = {}
+    //弹窗对列
     private _arrPopupDialog: any = []
     private _showTipsTime: number = 0
 
@@ -64,7 +66,7 @@ export class UIManager {
         if (this._dictSharedPanel.hasOwnProperty(panelPath)) {
             let panel = this._dictSharedPanel[panelPath];
             if (isValid(panel)) {
-                panel.parent = find("Canvas");
+                panel.parent = find(Constant.UI);
                 panel.active = true;
                 let script = panel.getComponent(scriptName);
                 let script2 = panel.getComponent(scriptName.charAt(0).toUpperCase() + scriptName.slice(1));
@@ -172,7 +174,7 @@ export class UIManager {
     }
 
     /**
-     * 将弹窗加入弹出窗队列
+     * 将弹窗插入弹出窗队列
      * @param {number} index 
      * @param {string} panelPath 
      * @param {string} scriptName 
@@ -218,7 +220,7 @@ export class UIManager {
 
     /**
      * 显示提示
-     * @param {String} content 
+     * @param {String} content 提示文字
      * @param {Function} cb 
      */
     public showTips(content: string | number, callback?: Function) {
@@ -243,16 +245,16 @@ export class UIManager {
 
     /**
      * 内部函数
-     * @param {String} content 
-     * @param {Function} cb 
+     * @param {String} content
+     * @param {Function} cb
      */
     private _showTipsAni(content: string, callback?: Function) {
-        ResourceUtil.getUIPrefabRes('common/tips', function (err: any, prefab: any) {
+        ResourceUtil.loadRes('common/tips', function (err: any, prefab: any) {
             if (err) {
                 return;
             }
 
-            /*let tipsNode = PoolManager.instance.getNode(prefab, find("Canvas") as Node);
+            /*let tipsNode = PoolManager.instance.get(prefab, find(Constant.UI) as Node);
 
             let tipScript = tipsNode.getComponent(Tips) as Tips;
             tipScript.show(content, callback);*/

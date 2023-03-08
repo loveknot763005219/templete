@@ -3,23 +3,15 @@ const { ccclass, property } = _decorator;
 
 @ccclass("PoolManager")
 export class PoolManager {
-    /* class member could be defined like this */
-    // dummy = '';
 
-    /* use `property` decorator if your want the member to be serializable */
-    // @property
-    // serializableDummy = 0;
 
-    private _dictPool: any = {}
-    private _dictPrefab: any = {}
+    //节点对象池
+    private _nodePool: any = {}
+    //预制体
+    private _cachePrefab: any = {}
 
-    static _instance: PoolManager;
-    /* class member could be defined like this */
-    // dummy = '';
+    private static _instance: PoolManager;
 
-    /* use `property` decorator if your want the member to be serializable */
-    // @property
-    // serializableDummy = 0;
 
     static get instance() {
         if (this._instance) {
@@ -33,7 +25,7 @@ export class PoolManager {
     /**
      * 根据预设从对象池中获取对应节点
      */
-    public getNode(prefab: Prefab, parent: Node) {
+    public get(prefab: Prefab, parent: Node) {
         let name = prefab.name;
         //@ts-ignore
         if (!prefab.position) {
@@ -41,11 +33,11 @@ export class PoolManager {
             name = prefab.data.name;
         }
 
-        this._dictPrefab[name] = prefab;
-        let node = null;
-        if (this._dictPool.hasOwnProperty(name)) {
+        this._cachePrefab[name] = prefab;
+        let node:Node = null;
+        if (this._nodePool.hasOwnProperty(name)) {
             //已有对应的对象池
-            let pool = this._dictPool[name];
+            let pool = this._nodePool[name];
             if (pool.size() > 0) {
                 node = pool.get();
             } else {
@@ -54,7 +46,7 @@ export class PoolManager {
         } else {
             //没有对应对象池，创建他！
             let pool = new NodePool();
-            this._dictPool[name] = pool;
+            this._nodePool[name] = pool;
 
             node = instantiate(prefab);
         }
@@ -67,19 +59,19 @@ export class PoolManager {
     /**
      * 将对应节点放回对象池中
      */
-    public putNode(node: Node) {
+    public put(node: Node) {
         if (!node) {
             return;
         }
         let name = node.name;
         let pool = null;
-        if (this._dictPool.hasOwnProperty(name)) {
+        if (this._nodePool.hasOwnProperty(name)) {
             //已有对应的对象池
-            pool = this._dictPool[name];
+            pool = this._nodePool[name];
         } else {
             //没有对应对象池，创建他！
             pool = new NodePool();
-            this._dictPool[name] = pool;
+            this._nodePool[name] = pool;
         }
 
         pool.put(node);
@@ -89,8 +81,8 @@ export class PoolManager {
      * 根据名称，清除对应对象池
      */
     public clearPool(name: string) {
-        if (this._dictPool.hasOwnProperty(name)) {
-            let pool = this._dictPool[name];
+        if (this._nodePool.hasOwnProperty(name)) {
+            let pool = this._nodePool[name];
             pool.clear();
         }
     }
@@ -101,11 +93,12 @@ export class PoolManager {
     * @param nodeNum 
     * 使用——PoolManager.instance.prePool(prefab, 40);
     */
-    public prePool(prefab: Prefab, nodeNum: number) {
+    public init(prefab: Prefab, nodeNum: number) {
         const name = prefab.name;
 
+        if(this._nodePool[name])return console.log('已有对象池');
         let pool = new NodePool();
-        this._dictPool[name] = pool;
+        this._nodePool[name] = pool;
 
         for (let i = 0; i < nodeNum; i++) {
             const node = instantiate(prefab);
