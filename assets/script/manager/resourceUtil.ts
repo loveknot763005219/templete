@@ -16,6 +16,7 @@ import {
     AudioClip
 } from "cc";
 import {Constant} from "./constant";
+import {Log} from "../utils/Log";
 const { ccclass } = _decorator;
 
 @ccclass("ResourceUtil")
@@ -30,7 +31,7 @@ export class ResourceUtil {
     public static loadRes (url: string, type: any, cb: Function = ()=>{}) {
         resources.load(url, (err: any, res: any)=>{
             if (err) {
-                error(err.message || err);
+                Log.e(err.message || err);
                 cb(err, res);
                 return;
             }
@@ -47,7 +48,7 @@ export class ResourceUtil {
         return new Promise((resolve, reject)=>{
             this.loadRes(path,Prefab,(err:any,prefab:Prefab)=>{
                 if(err){
-                    console.error('prefab load failed',path);
+                    Log.e('prefab load failed',path);
                     reject();
                     return
                 }
@@ -66,7 +67,7 @@ export class ResourceUtil {
     public static setSpriteFrame(path:string,sprite:SpriteComponent,cb:Function){
         this.loadRes(path,SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
             if(err){
-                console.log('spriteFrame load failed');
+                Log.e('spriteFrame load failed');
                 cb(err);
                 return;
             }
@@ -85,7 +86,7 @@ export class ResourceUtil {
         return new Promise((resolve, reject)=>{
             this.loadRes(path,AudioClip,(err:any,audio:AudioClip)=>{
                 if(err){
-                    console.log('audio load failed');
+                    Log.e('audio load failed');
                     reject && resolve(err);
                     return;
                 }
@@ -102,7 +103,7 @@ export class ResourceUtil {
         return new Promise((resolve, reject)=>{
             this.loadRes(path,SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
                 if(err){
-                    console.log('load spriteFrame failed');
+                    Log.e('load spriteFrame failed');
                     reject && reject(err);
                     return;
                 }
@@ -120,7 +121,7 @@ export class ResourceUtil {
         return new Promise((resolve, reject)=>{
             this.loadRes(path, SpriteFrame, (err: any, img: ImageAsset)=>{
                 if (err) {
-                    console.error('spriteFrame load failed!', path, err);
+                    Log.e('spriteFrame load failed!', path, err);
                     reject && reject();
                     return;
                 }
@@ -154,6 +155,21 @@ export class ResourceUtil {
         });
     }
 
+    /**
+     * 获取文本数据
+     * @param fileName 文件名
+     * @param cb  回调函数
+     */
+    public static getTextData (fileName:string, cb: Function) {
+        this.loadRes("datas/" + fileName,  null, function (err: any, content: TextAsset) {
+            if (err) {
+                Log.e(err.message || err);
+                return;
+            }
 
+            let text: string = content.text;
+            cb(err, text);
+        });
+    }
 
 }

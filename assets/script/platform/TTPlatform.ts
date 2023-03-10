@@ -1,5 +1,6 @@
 //字节小玩法API
 import {Util} from "../utils/util";
+import {Log} from "../utils/Log";
 
 declare var tt: any;
 //测试地址
@@ -48,7 +49,7 @@ export class TTPlatform {
         tt.login({
             force: true,
             success(res) {
-                console.log(`login 调用成功${res.code} ${res.anonymousCode}`);
+                Log.l(`login 调用成功${res.code} ${res.anonymousCode}`);
                 self.request(urls.login, {openudid: res.code, user_type: 10}, (msg) => {
                     if (parseInt(msg.cmd) == 10000 && msg.iRet == 1) {
 
@@ -56,7 +57,7 @@ export class TTPlatform {
                 },false)
             },
             fail(err) {
-                console.log(`login 调用失败`, err);
+                Log.l(`login 调用失败`, err);
             },
         })
     }
@@ -74,13 +75,13 @@ export class TTPlatform {
         tt.login({
             force: true,
             success(res) {
-                console.log(`login 调用成功${res.code} ${res.anonymousCode}`);
+                Log.l(`login 调用成功${res.code} ${res.anonymousCode}`);
                 //服务器登录
                 callback && callback(res);
 
             },
             fail(res) {
-                console.log(`login 调用失败`);
+                Log.l(`login 调用失败`);
             },
         })
     }*/
@@ -110,7 +111,7 @@ export class TTPlatform {
             tt.checkIndividualPlayer({
                 complete(checkRes) {
 
-                    console.log("========checkIndividualPlayer=============", checkRes)
+                    Log.l("========checkIndividualPlayer=============", checkRes)
 
                     let active = 0
                     if (checkRes && checkRes.errCode === 0 && checkRes.IsIndividualPlayer) {
@@ -121,7 +122,7 @@ export class TTPlatform {
                 }
             })
         } catch (e) {
-            console.log("========checkIndividualPlayer err=============", e.toString())
+            Log.l("========checkIndividualPlayer err=============", e.toString())
             self.modify(0)
         }
 
@@ -139,11 +140,11 @@ export class TTPlatform {
         try {
             tt.getLiveUserInfo({
                 success: function (res) {
-                    console.log('获取玩家信息', res)
+                    Log.l('获取玩家信息', res)
                     params = res.userInfo;
                     tt.getRoomInfo({
                         success: (roomData) => {
-                            console.log("获取房间号成功", roomData);
+                            Log.l("获取房间号成功", roomData);
                             self.room_id = roomData.roomInfo.roomID;
                             params['room_id'] = self.room_id;
 
@@ -152,22 +153,22 @@ export class TTPlatform {
                             delete params['openUID'];
 
 
-                            console.log("=========modify params", params);
+                            Log.l("=========modify params", params);
 
                             self.request(urls.modify, params)
                         },
                         fail: (res) => {
-                            console.log('获取房间号失败', res);
+                            Log.l('获取房间号失败', res);
                         }
                     });
                 },
                 fail(e) {
-                    console.log('getUserInfo error', e)
+                    Log.l('getUserInfo error', e)
                 },
             });
 
         } catch (err) {
-            console.log('modify err', err);
+            Log.l('modify err', err);
         }
 
 
@@ -180,11 +181,11 @@ export class TTPlatform {
     public getRoomId() {
 
         if (this.room_id) {
-            console.log(this.room_id, '已经有房间号');
+            Log.l(this.room_id, '已经有房间号');
             return this.room_id;
         }
 
-        console.log('未获取room_id');
+        Log.l('未获取room_id');
     }
 
 
@@ -201,7 +202,7 @@ export class TTPlatform {
 
         if (!num || !tag || !orderId) return;
 
-        console.log(" 支付数量：" + num + " 支付标签：" + tag + " orderId：" + orderId);
+        Log.l(" 支付数量：" + num + " 支付标签：" + tag + " orderId：" + orderId);
 
         try {
             tt.payDiamondsV3({
@@ -209,16 +210,16 @@ export class TTPlatform {
                 tag: tag,
                 orderId,
                 success(res) {
-                    console.info("抖币支付成功：", res);
+                    Log.l("抖币支付成功：", res);
 
                     callback && callback(res);
                 },
                 fail(err) {
-                    console.info("抖币支付数据异常：", err);
+                    Log.l("抖币支付数据异常：", err);
                 },
             });
         } catch (err) {
-            console.log("p_orderid cf", err);
+            Log.l("p_orderid cf", err);
         }
 
     }
@@ -236,11 +237,11 @@ export class TTPlatform {
             fontsize,
             color,
             success: (res) => {
-                console.log(`宽:${res.width}, 高:${res.height}`);
+                Log.l(`宽:${res.width}, 高:${res.height}`);
 
             },
             fail: (res) => {
-                console.log(`绘制昵称错误，错误码:${res.errCode}`);
+                Log.l(`绘制昵称错误，错误码:${res.errCode}`);
             },
         });
     }
@@ -257,16 +258,16 @@ export class TTPlatform {
             confirmColor: "#000000",
             cancelColor: "#000000",
             success(res) {
-                console.log("用户点击了" + (res.confirm ? "确定" : "取消"));
+                Log.l("用户点击了" + (res.confirm ? "确定" : "取消"));
                 if (res.confirm) {
-                    console.log('重新登录')
+                    Log.l('重新登录')
                     TTPlatform.getInstance().startLogin();
                 } else {
 
                 }
             },
             fail(err) {
-                console.log(`showModal 调用失败`, err);
+                Log.l(`showModal 调用失败`, err);
             },
         })
     }
@@ -283,10 +284,10 @@ export class TTPlatform {
             cancelColor: "#000000",
             showCancel: false,
             success(res) {
-                console.log("用户点击了" + (res.confirm ? "确定" : "取消"));
+                Log.l("用户点击了" + (res.confirm ? "确定" : "取消"));
             },
             fail(err) {
-                console.log(`showModal 调用失败`, err);
+                Log.l(`showModal 调用失败`, err);
             },
         });
     }
@@ -298,10 +299,10 @@ export class TTPlatform {
     public isFavoriteGame() {
         tt.isFavoriteGame({
             success(res) {
-                console.log('当前用户是否收藏当前玩法', res);
+                Log.l('当前用户是否收藏当前玩法', res);
             },
             fail(res) {
-                console.log('调用失败 ', res);
+                Log.l('调用失败 ', res);
             },
         })
     }
@@ -314,11 +315,11 @@ export class TTPlatform {
     public addToFavorites(callback?: Function) {
         tt.addToFavorites({
             success: (res) => {
-                console.log('收藏成功', res);
+                Log.l('收藏成功', res);
                 callback && callback(res)
             },
             fail: (err) => {
-                console.log('收藏失败', err);
+                Log.l('收藏失败', err);
             }
         })
     }
@@ -369,7 +370,7 @@ export class TTPlatform {
             dataType: "json",
             responseType: "text",
             success(res) {
-                console.log("新接口网络请求成功", res.data, url);
+                Log.l("新接口网络请求成功", res.data, url);
 
                 if (showLoading) {
                     tt.hideLoading({noConflict: true});
@@ -380,13 +381,13 @@ export class TTPlatform {
 
                 try {
                     if (parseInt(res.data.cmd) == 10000) {
-                        console.log("记录登录信息");
+                        Log.l("记录登录信息");
                         let info = res.data.data
                         user_id = info.user_id
                         sessid = info.sessid
                     }
                 } catch (err) {
-                    console.log(err);
+                    Log.l(err);
                 }
 
                 if (parseInt(res.data.iRet) !== 1) {
@@ -418,7 +419,7 @@ export class TTPlatform {
                 if (showLoading) {
                     tt.hideLoading({noConflict: true});
                 }
-                console.log("网络请求失败", e,url);
+                Log.l("网络请求失败", e,url);
             }
         })
 

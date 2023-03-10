@@ -1,6 +1,7 @@
 import { modal } from "./Modal";
 import * as cc from "cc";
 import {assetManager} from "cc";
+import {Log} from "./Log";
 
 /**
      * 加载bundle
@@ -17,7 +18,7 @@ export async function loadBundle(name: string, forceRetry = true, retryCounter =
         }
         return res;
     } catch (e) {
-        console.error("加载bundle失败", name, e);
+        Log.e("加载bundle失败", name, e);
         if (retryCounter.restTime) {
             retryCounter.restTime--;
             await waitSysTime(retryCounter.retryInterval);

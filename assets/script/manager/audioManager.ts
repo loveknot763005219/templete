@@ -2,6 +2,7 @@
 import { _decorator, Component, Node, AudioClip, sys, AudioSource, game, director } from "cc";
 import { StorageManager } from "./storageManager";
 import { ResourceUtil } from "./resourceUtil";
+import {Log} from "../utils/Log";
 const { ccclass, property } = _decorator;
 
 interface AudioData {
@@ -70,8 +71,6 @@ export class AudioManager {
         } else {
             state = StorageManager.instance.getGlobalData('sound');
         }
-
-        // console.log('Config for [' + (isMusic ? 'Music' : 'Sound') + '] is ' + state);
 
         return !state || state === 'true' ? true : false;
     }
@@ -174,7 +173,7 @@ export class AudioManager {
 
     //看广告时先将音乐暂停
     pauseAll() {
-        console.log("pause all music!!!");
+        Log.l("pause all music!!!");
 
         for (let item in this.audios) {
             if (this.audios.hasOwnProperty(item)) {

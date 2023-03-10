@@ -19,6 +19,7 @@ import {
 import {PoolManager} from './poolManager';
 import {ResourceUtil} from './resourceUtil';
 import {Constant} from "./constant";
+import {Log} from "../utils/Log";
 
 
 const {ccclass, property} = _decorator;
@@ -92,7 +93,7 @@ export class EffectManager extends Component {
                 cb();
             })
         } else {
-            console.log('没有动画节点')
+            Log.e('没有动画节点')
             cb();
         }
     }
