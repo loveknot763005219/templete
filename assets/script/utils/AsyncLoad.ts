@@ -1,4 +1,4 @@
-import { modal } from "./Modal";
+import { modal } from "./modal";
 import * as cc from "cc";
 import {assetManager} from "cc";
 import {Log} from "./Log";
