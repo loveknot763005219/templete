@@ -1,6 +1,6 @@
 //字节小玩法API
 import {Util} from "../utils/util";
-import {Log} from "../utils/Log";
+import {Log} from "../utils/log";
 
 declare var tt: any;
 //测试地址
@@ -42,14 +42,15 @@ export class TTPlatform {
         status.msg = msg
     }
 
-
+    //调用该 API 可以获取用户临时的登录凭证。
+    //https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/api/open-interface/log-in/tt-login/
     //抖音登录
     public login() {
         return new Promise((resolve, reject)=>{
             tt.login({
                 force:true,
                 success(res){
-                    Log.l('login 调用成功',res)
+                    Log.debug('login 调用成功',res)
                     resolve(res);
                 },
                 fail(e){
@@ -66,38 +67,23 @@ export class TTPlatform {
         return tt.canIUse(str);
     }
 
-    //调用该 API 可以获取用户临时的登录凭证。
-    //https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/api/open-interface/log-in/tt-login/
-    /*public login(callback: Function) {
-        tt.login({
-            force: true,
-            success(res) {
-                Log.l(`login 调用成功${res.code} ${res.anonymousCode}`);
-                //服务器登录
-                callback && callback(res);
 
-            },
-            fail(res) {
-                Log.l(`login 调用失败`);
-            },
-        })
-    }*/
 
     //显示灰色背景的 loading 提示框。该提示框不会主动隐藏。
     //https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/api/interface/interfeedback/tt-show-loading/
-    /*public showLoading() {
+    public showLoading() {
         tt.showLoading({
             title: "请求中，请稍后...",
         })
-    }*/
+    }
 
     //隐藏 loading 提示框。
     //https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/api/interface/interfeedback/tt-hide-loading
-    /*public hideLoading() {
+    public hideLoading() {
         tt.hideLoading({
             noConflict: true,
         })
-    }*/
+    }
 
     //高潜用户上报
     public reportActive() {
@@ -105,7 +91,7 @@ export class TTPlatform {
         return new Promise((resolve, reject)=>{
             tt.checkIndividualPlayer({
                 complete(res){
-                    Log.l('上报成功',res)
+                    Log.debug('上报成功',res)
                     resolve(res);
                 }
             })
@@ -120,11 +106,11 @@ export class TTPlatform {
         return new Promise((resolve, reject)=>{
             tt.getLiveUserInfo({
                 success(res){
-                    Log.l('获取玩家信息', res)
+                    Log.debug('获取玩家信息', res)
                     resolve(res)
                 },
                 fail(e){
-                    Log.l('获取玩家信息', e)
+                    Log.debug('获取玩家信息', e)
                     reject(e)
                 }
             })
@@ -135,35 +121,24 @@ export class TTPlatform {
     //https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/api/live/tt-get-room-info/
     public getRoomInfo(){
         return new Promise((resolve, reject)=>{
+            if(this.room_id){
+                resolve(this.room_id);
+                return;
+            }
+            let self = this;
             tt.getRoomInfo({
                 success(res){
-                    Log.l('获取房间信息', res)
-                    resolve(res)
+                    Log.debug('获取房间信息', res)
+                    self.room_id = res.roomInfo.roomID;
+                    resolve(res.roomInfo.roomID);
                 },
                 fail(e){
-                    Log.l('获取房间信息', e)
+                    Log.debug('获取房间信息', e)
                     reject(e)
                 }
             })
         })
     }
-
-
-
-
-
-
-    //获取房间id
-    public getRoomId() {
-
-        if (this.room_id) {
-            Log.l(this.room_id, '已经有房间号');
-            return this.room_id;
-        }
-
-        return null;
-    }
-
 
 
     //直播间调用抖币支付能力，本文档介绍终端接口定义，详细支付流程可参考支付流程
@@ -176,7 +151,7 @@ export class TTPlatform {
         tag = String(tag)
         orderId = String(orderId)
 
-        Log.l(" 支付数量：" + num + " 支付标签：" + tag + " orderId：" + orderId);
+        Log.debug(" 支付数量：" + num + " 支付标签：" + tag + " orderId：" + orderId);
 
         return new Promise((resolve, reject)=>{
             tt.payDiamondsV3({
@@ -184,12 +159,11 @@ export class TTPlatform {
                 tag: tag,
                 orderId,
                 success(res) {
-                    Log.l("抖币支付成功：", res);
-
+                    Log.debug("抖币支付成功：", res);
                     resolve(res);
                 },
                 fail(err) {
-                    Log.l("抖币支付数据异常：", err);
+                    Log.debug("抖币支付数据异常：", err);
                     reject(err)
                 },
             });
@@ -212,11 +186,11 @@ export class TTPlatform {
                 fontsize,
                 color,
                 success: (res) => {
-                    Log.l(`宽:${res.width}, 高:${res.height}`);
+                    Log.debug(`宽:${res.width}, 高:${res.height}`);
                     resolve(res)
                 },
                 fail: (e) => {
-                    Log.l(`绘制昵称错误，错误码:${e.errCode}`);
+                    Log.debug(`绘制昵称错误，错误码:${e.errCode}`);
                     reject(e)
                 },
             });
@@ -237,10 +211,10 @@ export class TTPlatform {
             cancelColor: cancelColor,
             showCancel: showCancel,
             success(res) {
-                Log.l("用户点击了" + (res.confirm ? "确定" : "取消"));
+                Log.debug("用户点击了" + (res.confirm ? "确定" : "取消"));
             },
             fail(err) {
-                Log.l(`showModal 调用失败`, err);
+                Log.debug(`showModal 调用失败`, err);
             },
         })
     }
@@ -252,13 +226,17 @@ export class TTPlatform {
      * https://microapp.bytedance.com/docs/zh-CN/interaction/develop/api/live/favorite/tt-isFavoriteGame
      */
     public isFavoriteGame() {
-        tt.isFavoriteGame({
-            success(res) {
-                Log.l('当前用户是否收藏当前玩法', res);
-            },
-            fail(res) {
-                Log.l('调用失败 ', res);
-            },
+        return new Promise((resolve, reject)=>{
+            tt.isFavoriteGame({
+                success(res) {
+                    Log.debug('当前用户是否收藏当前玩法', res);
+                    resolve(res)
+                },
+                fail(e) {
+                    Log.debug('调用失败 ', e);
+                    reject(e)
+                },
+            })
         })
     }
 
@@ -271,11 +249,11 @@ export class TTPlatform {
         return new Promise((resolve, reject)=>{
             tt.addToFavorites({
                 success: (res) => {
-                    Log.l('收藏成功', res);
+                    Log.debug('收藏成功', res);
                     resolve(res);
                 },
                 fail: (err) => {
-                    Log.l('收藏失败', err);
+                    Log.debug('收藏失败', err);
                     reject(err)
                 }
             })
@@ -325,17 +303,15 @@ export class TTPlatform {
                 dataType: "json",
                 responseType: "text",
                 success(res) {
-                    Log.l("网络请求成功", res.data, url);
+                    Log.debug("网络请求成功", res.data, url);
                     resolve(res);
                 },
                 fail(e) {
-                    Log.l("网络请求失败", e,url);
+                    Log.debug("网络请求失败", e,url);
                     reject(e);
                 }
             })
         })
-
-
 
     }
 

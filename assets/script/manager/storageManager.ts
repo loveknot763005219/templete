@@ -1,7 +1,7 @@
 import { _decorator, sys, log } from "cc";
 import { Constant } from "./constant";
 import {Util} from "../utils/util";
-import {Log} from "../utils/Log";
+import {Log} from "../utils/log";
 
 
 const { ccclass, property } = _decorator;
@@ -87,7 +87,7 @@ export class StorageManager {
         if (this._jsonData[account]) {
             this._jsonData[account][key] = value;
         } else {
-            Log.e("no account can not save");
+            Log.error("no account can not save");
         }
     }
 

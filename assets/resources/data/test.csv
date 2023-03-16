@@ -1,0 +1,7 @@
+编号,名称,预制体,类型
+number,string,string,number
+ID,name,prefab,type
+1001,小鸟,birdie01,0
+1002,食人花,chomper,0
+1003,杀虫剂,insecticide,0
+1004,螳螂,mantis,0

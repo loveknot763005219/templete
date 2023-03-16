@@ -2,7 +2,7 @@
 import { _decorator, Component, Node, AudioClip, sys, AudioSource, game, director } from "cc";
 import { StorageManager } from "./storageManager";
 import { ResourceUtil } from "./resourceUtil";
-import {Log} from "../utils/Log";
+import {Log} from "../utils/log";
 const { ccclass, property } = _decorator;
 
 interface AudioData {
@@ -173,7 +173,7 @@ export class AudioManager {
 
     //看广告时先将音乐暂停
     pauseAll() {
-        Log.l("pause all music!!!");
+        Log.debug("pause all music!!!");
 
         for (let item in this.audios) {
             if (this.audios.hasOwnProperty(item)) {

@@ -1,5 +1,5 @@
 import { _decorator, Prefab, Node, instantiate, NodePool } from "cc";
-import {Log} from "../utils/Log";
+import {Log} from "../utils/log";
 const { ccclass, property } = _decorator;
 
 @ccclass("PoolManager")
@@ -97,7 +97,7 @@ export class PoolManager {
     public init(prefab: Prefab, nodeNum: number) {
         const name = prefab.name;
 
-        if(this._nodePool[name])return Log.e('已有对象池');
+        if(this._nodePool[name])return Log.error('已有对象池');
         let pool = new NodePool();
         this._nodePool[name] = pool;
 

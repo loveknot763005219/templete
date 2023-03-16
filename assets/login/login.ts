@@ -1,5 +1,6 @@
 import {_decorator, assetManager, Component, director, Node} from 'cc';
 import {Constant} from "../script/manager/constant";
+import {LocalConfig} from "../script/manager/localConfig";
 
 
 const {ccclass, property} = _decorator;
@@ -31,6 +32,10 @@ export class login extends Component {
         }else {
             this.enter();
         }
+
+        LocalConfig.instance.loadConfig(()=>{
+
+        })
     }
 
     enter() {

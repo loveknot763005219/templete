@@ -1,6 +1,7 @@
 import { _decorator, resources } from "cc";
 import { CSVManager } from "./csvManager";
 import { ResourceUtil } from "./resourceUtil";
+import {Log} from "../utils/log";
 const { ccclass, property } = _decorator;
 
 @ccclass("LocalConfig")
@@ -35,21 +36,24 @@ export class LocalConfig {
 
     private _loadCSV () {
         //新增数据表 请往该数组中添加....
-        resources.loadDir("datas", (err: any, assets)=>{
+        resources.loadDir("data", (err: any, assets)=>{
             if (err) {
                 return;
             }
+
 
             let arrCsvFiles = assets.filter((item: any)=>{
                 return item._native !== ".md";
             })
 
             this._cntLoad = arrCsvFiles.length;
-    
+
+
             //客户端加载
             if (arrCsvFiles.length) {
                 arrCsvFiles.forEach((item, index, array)=> {
                     ResourceUtil.getTextData(item.name, (err: any, content: any) => {
+
                         this._csvManager.addTable(item.name, content);
                         this._tryToCallbackOnFinished();
                     });

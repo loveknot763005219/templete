@@ -1,7 +1,7 @@
 import { modal } from "./modal";
 import * as cc from "cc";
 import {assetManager} from "cc";
-import {Log} from "./Log";
+import {Log} from "./log";
 
 /**
      * 加载bundle
@@ -12,13 +12,13 @@ import {Log} from "./Log";
      */
 export async function loadBundle(name: string, forceRetry = true, retryCounter = new RetryCounter()): Promise<cc.AssetManager.Bundle> {
     try {
-        let res = await getBundle(name);
+        let res = getBundle(name);
         if (!res) {
             res = await _loadBundle(name);
         }
         return res;
     } catch (e) {
-        Log.e("加载bundle失败", name, e);
+        Log.error("加载bundle失败", name, e);
         if (retryCounter.restTime) {
             retryCounter.restTime--;
             await waitSysTime(retryCounter.retryInterval);
@@ -41,7 +41,7 @@ export function getBundle(name: string) {
     return assetManager.getBundle(name);
 }
 
- async function _loadBundle(name: string): Promise<cc.AssetManager.Bundle> {
+function _loadBundle(name: string): Promise<cc.AssetManager.Bundle> {
     return new Promise((resolve, reject) => {
         assetManager.loadBundle(name, (err, bundle: cc.AssetManager.Bundle) => {
             if (err) {

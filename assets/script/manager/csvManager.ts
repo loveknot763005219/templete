@@ -1,4 +1,5 @@
 import { _decorator } from "cc";
+import {Log} from "../utils/log";
 
 const { ccclass, property } = _decorator;
 
@@ -453,6 +454,7 @@ export class CSVManager {
         this._csvTables[tableName] = tableData;
         this._csvTableForArr[tableName] = tableArr;
 
+        Log.debug(this._csvTables, this._csvTableForArr,'文本');
         //this.csvTables[tableName].initFromText(tableContent);
     }
 

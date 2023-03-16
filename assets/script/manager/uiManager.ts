@@ -2,7 +2,7 @@ import { _decorator, Component, Node, SpriteComponent, Color, RichTextComponent,
 import { ResourceUtil } from "./resourceUtil";
 import { PoolManager } from "./poolManager";
 import {Constant} from "./constant";
-import {Log} from "../utils/Log";
+import {Log} from "../utils/log";
 const { ccclass, property } = _decorator;
 
 const SHOW_STR_INTERVAL_TIME = 800;
@@ -97,7 +97,7 @@ export class UIManager {
 
             this._dictLoading[panelPath] = false;
             if (err) {
-                Log.e(err);
+                Log.error(err);
                 return;
             }
 

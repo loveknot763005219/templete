@@ -1,5 +1,5 @@
 import {__private, sys} from "cc";
-import {Log} from "./Log";
+import {Log} from "./log";
 
 
 export function modal(content: string, yes: string, no: string = null) {
@@ -25,16 +25,16 @@ export function modal(content: string, yes: string, no: string = null) {
                 showCancel: showCancel,
                 success(res) {
                     if (res.confirm) {
-                        Log.l("用户点击确定");
+                        Log.debug("用户点击确定");
                         resolve(true);
                     } else if (res.cancel) {
-                        Log.l("用户点击取消");
+                        Log.debug("用户点击取消");
                         resolve(false);
                     }
                 },
             });
         } else {
-            Log.e("没实现的模态框", sys[sys.platform], sys.platform);
+            Log.error("没实现的模态框", sys[sys.platform], sys.platform);
             // resolve(true);
         }
     });
