@@ -27,13 +27,14 @@ let status = {
 export class TTPlatform {
     private static _instance: TTPlatform;
 
-    public static getInstance(): TTPlatform {
+    public static get instance(): TTPlatform {
         if (!this._instance) {
             this._instance = new TTPlatform();
         }
         return this._instance;
     }
 
+    //房间id
     private room_id;
 
 

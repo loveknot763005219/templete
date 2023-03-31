@@ -65,7 +65,7 @@ export class ResourceUtil {
      * @param cb 回调
      */
     public static setSpriteFrame(path:string,sprite:SpriteComponent,cb:Function){
-        this.loadRes(path,SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
+        this.loadRes(path + '/spriteFrame',SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
             if(err){
                 Log.error('spriteFrame load failed');
                 cb(err);
@@ -101,7 +101,7 @@ export class ResourceUtil {
      */
     public static loadSpriteFrame(path){
         return new Promise((resolve, reject)=>{
-            this.loadRes(path,SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
+            this.loadRes(path + '/spriteFrame',SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
                 if(err){
                     Log.error('load spriteFrame failed');
                     reject && reject(err);

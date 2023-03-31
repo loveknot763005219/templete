@@ -1,3 +1,6 @@
+
+import {Animation, Button} from "cc";
+
 //是否显示打印
 const show = true;
 
@@ -15,6 +18,8 @@ export class Log {
     public static error(message?: any, ...optionalParams: any[]){
         if(!show)return;
         console.error(message, ...optionalParams);
+
+
     }
 }
 
