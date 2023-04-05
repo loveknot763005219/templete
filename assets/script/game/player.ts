@@ -45,6 +45,7 @@ export class Player extends Component {
             str = "left";
         }
 
+
         return str;
     }
 
