@@ -42,6 +42,8 @@ export class Constant {
     public static EVENT_NAME = {
         //   游戏开始事件
         GAME_START: 'gameStart',
+        //角色移動
+        PLAYER_MOVE:'playerMove',
 
     }
 
