@@ -44,6 +44,8 @@ export class Constant {
         GAME_START: 'gameStart',
         //角色移動
         PLAYER_MOVE:'playerMove',
+        //角色站立
+        PLAYER_STAND:'playerStand'
 
     }
 

@@ -1,8 +1,8 @@
-import {_decorator, Component, dragonBones, math, Node, Vec3} from 'cc';
+import {_decorator, Component, dragonBones, math, Node, Vec3, view, find, UITransform} from 'cc';
 import {ClientEvent} from "../manager/clientEvent";
 import {Constant} from "../manager/constant";
-import * as cc from "cc";
-const { ccclass, property } = _decorator;
+
+const {ccclass, property} = _decorator;
 
 @ccclass('player')
 export class Player extends Component {
@@ -10,22 +10,69 @@ export class Player extends Component {
     @property({type: dragonBones.ArmatureDisplay, tooltip: '龙骨', displayName: "龙骨"})
     dragon: dragonBones.ArmatureDisplay = null;
 
-    private _speed:number = 5
+    private _speed: number = 5
 
-    private _direction
+    private _direction;
+    //相机
+    private camera: Node = null;
+    //地图
+    private background: Node = null;
+    //摇杆
+    private stick: Node = null;
+
+    //边界
+    private area = {width: 0, height: 0}
+
+
+    onLoad() {
+        let canvas = find('Canvas');
+        this.camera = canvas.getChildByName('Camera');
+        this.background = canvas.getChildByName('background')
+        this.stick = canvas.getChildByName('bar');
+        this.area = this.background.getComponent(UITransform);
+
+    }
 
     protected onEnable(): void {
-        ClientEvent.on(Constant.EVENT_NAME.PLAYER_MOVE,this._move,this);
+        this.check();
+        ClientEvent.on(Constant.EVENT_NAME.PLAYER_MOVE, this._move, this);
+        ClientEvent.on(Constant.EVENT_NAME.PLAYER_STAND, this._stand, this);
     }
 
     protected onDisable(): void {
-        ClientEvent.off(Constant.EVENT_NAME.PLAYER_MOVE,this._move,this);
+        ClientEvent.off(Constant.EVENT_NAME.PLAYER_MOVE, this._move, this);
+        ClientEvent.off(Constant.EVENT_NAME.PLAYER_STAND, this._stand, this);
     }
 
-    _move(vec:Vec3){
+    _move(vec: Vec3) {
+        this.check();
+        this.changeDragon(vec, 'walk');
 
-        this.changeDragon(vec,'walk');
-        this.node.setPosition(this.node.position.add(vec.normalize().multiplyScalar(this._speed)))
+        const position = this.node.getPosition();
+        const ui = this.node.getComponent(UITransform);
+        let del = vec.normalize().multiplyScalar(this._speed);
+
+
+        if (Math.abs(position.x + del.x) > this.area.width / 2) {
+            if(del.x * position.x > 0){
+                //同向
+                del.x = 0;
+            }
+        } else {
+
+        }
+
+        if (position.y + del.y + ui.height > this.area.height / 2 || position.y + del.y < -this.area.height / 2) {
+            if(position.y * del.y > 0){
+                del.y = 0;
+            }
+        }
+
+        this.node.setPosition(this.node.position.add(del))
+    }
+
+    _stand() {
+        this.changeDragon(null, 'stand');
     }
 
     /**
@@ -56,7 +103,9 @@ export class Player extends Component {
      */
     changeDragon(vec: Vec3, str: string) {
 
-        this._direction = this.getToward(vec);
+        if (vec) {
+            this._direction = this.getToward(vec);
+        }
         if (this.dragon.armatureName != this._direction) {
             this.dragon.armatureName = this._direction;
         }
@@ -67,12 +116,25 @@ export class Player extends Component {
 
     }
 
-    start() {
+    /**
+     * 镜头校准
+     */
+    check() {
+        //摄像机移动
+        //获取屏幕尺寸
+        const canvas = view.getDesignResolutionSize()
+        const background = this.background.getComponent(UITransform);
+        const role = this.node.getPosition();
 
-    }
+        let mh = (background.height - canvas.height) / 2;
+        let mw = (background.width - canvas.width) / 2;
 
-    update(deltaTime: number) {
-        
+        let x = role.x > mw ? mw : Math.abs(role.x) > mw ? -mw : role.x;
+        let y = role.y > mh ? mh : Math.abs(role.y) > mh ? -mh : role.y;
+
+        this.camera.setPosition(x, y);
+        this.stick.setPosition(x, y);
+
     }
 }
 
