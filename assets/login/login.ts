@@ -39,8 +39,8 @@ export class login extends Component {
     }
 
     enter() {
-        director.preloadScene('main', () => {
-            director.loadScene('main')
+        director.preloadScene('game', () => {
+            director.loadScene('game')
         })
     }
 
