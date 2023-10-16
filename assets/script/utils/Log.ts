@@ -1,8 +1,10 @@
 
-import {Animation, Button} from "cc";
+// 0测试服 1正式服 2预发布服
+const SERVER_MODE:number = 0;
 
 //是否显示打印
-const show = true;
+let show = true;
+show = SERVER_MODE === 0
 
 export class Log {
     public static debug(message?: any, ...optionalParams: any[]){

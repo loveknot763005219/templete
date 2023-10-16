@@ -17,19 +17,21 @@ import {
 } from "cc";
 import {Constant} from "./constant";
 import {Log} from "../utils/log";
-const { ccclass } = _decorator;
+
+const {ccclass} = _decorator;
 
 @ccclass("ResourceUtil")
 export class ResourceUtil {
-        /**
+    /**
      * 加载资源
      * @param url   资源路径
      * @param type  资源类型
      * @param cb    回调
      * @method loadRes
      */
-    public static loadRes (url: string, type: any, cb: Function = ()=>{}) {
-        resources.load(url, (err: any, res: any)=>{
+    public static loadRes(url: string, type: any, cb: Function = () => {
+    }) {
+        resources.load(url, (err: any, res: any) => {
             if (err) {
                 Log.error(err.message || err);
                 cb(err, res);
@@ -44,11 +46,11 @@ export class ResourceUtil {
      * 加载预制体 普通 粒子  帧动画
      * @param path 路径
      */
-    public static loadPrefab(path:string){
-        return new Promise((resolve, reject)=>{
-            this.loadRes(path,Prefab,(err:any,prefab:Prefab)=>{
-                if(err){
-                    Log.error('prefab load failed',path);
+    public static loadPrefab(path: string) {
+        return new Promise((resolve, reject) => {
+            this.loadRes(path, Prefab, (err: any, prefab: Prefab) => {
+                if (err) {
+                    Log.error('prefab load failed', path);
                     reject();
                     return
                 }
@@ -64,14 +66,14 @@ export class ResourceUtil {
      * @param sprite 要设置的精灵
      * @param cb 回调
      */
-    public static setSpriteFrame(path:string,sprite:SpriteComponent,cb:Function){
-        this.loadRes(path + '/spriteFrame',SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
-            if(err){
+    public static setSpriteFrame(path: string, sprite: SpriteComponent, cb: Function) {
+        this.loadRes(path + '/spriteFrame', SpriteFrame, (err: any, spriteFrame: SpriteFrame) => {
+            if (err) {
                 Log.error('spriteFrame load failed');
                 cb(err);
                 return;
             }
-            if(sprite && sprite.isValid){
+            if (sprite && sprite.isValid) {
                 sprite.spriteFrame = spriteFrame;
                 cb(null)
             }
@@ -82,10 +84,10 @@ export class ResourceUtil {
      * 加载音效资源
      * @param path 路径
      */
-    public static loadAudioClip(path:string){
-        return new Promise((resolve, reject)=>{
-            this.loadRes(path,AudioClip,(err:any,audio:AudioClip)=>{
-                if(err){
+    public static loadAudioClip(path: string) {
+        return new Promise((resolve, reject) => {
+            this.loadRes(path, AudioClip, (err: any, audio: AudioClip) => {
+                if (err) {
                     Log.error('audio load failed');
                     reject && resolve(err);
                     return;
@@ -99,10 +101,10 @@ export class ResourceUtil {
      * 加载贴图资源
      * @param path 路径
      */
-    public static loadSpriteFrame(path){
-        return new Promise((resolve, reject)=>{
-            this.loadRes(path + '/spriteFrame',SpriteFrame,(err:any,spriteFrame:SpriteFrame)=>{
-                if(err){
+    public static loadSpriteFrame(path) {
+        return new Promise((resolve, reject) => {
+            this.loadRes(path + '/spriteFrame', SpriteFrame, (err: any, spriteFrame: SpriteFrame) => {
+                if (err) {
                     Log.error('load spriteFrame failed');
                     reject && reject(err);
                     return;
@@ -115,11 +117,11 @@ export class ResourceUtil {
     /**
      * 获取贴图资源
      * @param path 贴图路径
-     * @returns 
+     * @returns
      */
     public static loadSpriteFrameRes(path: string) {
-        return new Promise((resolve, reject)=>{
-            this.loadRes(path, SpriteFrame, (err: any, img: ImageAsset)=>{
+        return new Promise((resolve, reject) => {
+            this.loadRes(path, SpriteFrame, (err: any, img: ImageAsset) => {
                 if (err) {
                     Log.error('spriteFrame load failed!', path, err);
                     reject && reject();
@@ -131,7 +133,7 @@ export class ResourceUtil {
 
                 let sf = new SpriteFrame();
                 sf.texture = texture;
-    
+
                 resolve && resolve(sf);
             })
         })
@@ -143,8 +145,8 @@ export class ResourceUtil {
      * @param cb 回调函数
      * @param parent 父节点
      */
-    public static createUI (path: string, cb?: Function, parent?: Node) {
-        this.loadPrefab(path).then((prefab:Prefab)=> {
+    public static createUI(path: string, cb?: Function, parent?: Node) {
+        this.loadPrefab(path).then((prefab: Prefab) => {
             let node: Node = instantiate(prefab)
             node.setPosition(0, 0, 0);
             if (!parent) {
@@ -160,8 +162,8 @@ export class ResourceUtil {
      * @param fileName 文件名
      * @param cb  回调函数
      */
-    public static getTextData (fileName:string, cb: Function) {
-        this.loadRes("data/" + fileName,  null, function (err: any, content: TextAsset) {
+    public static getTextData(fileName: string, cb: Function) {
+        this.loadRes("data/" + fileName, null, function (err: any, content: TextAsset) {
             if (err) {
                 Log.error(err.message || err);
                 return;
